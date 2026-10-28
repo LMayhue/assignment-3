@@ -1,6 +1,7 @@
 import express from 'express';
 import {engine} from 'express-handlebars';
-import { loggingMiddleware } from './middleware/logging';
+import {loggingMiddleware} from './middleware/logging';
+import {errorHandler} from './middleware/error-handling';
 
 
 //Express & handlebars initialization
@@ -11,8 +12,12 @@ app.set('views', './views');
 
 
 //applicable middleware
-app.use(express.static("static"));
+app.use(express.static("public"));
 app.use(loggingMiddleware);
+
+app.use(errorHandler);
+
+
 
 
 //Endpoints
@@ -26,6 +31,6 @@ app.get("/", (req, res) => {
 
 
 //Start the server
-app.listen(5008, () => {
-    console.log("Server running on 5008");
+app.listen(process.env.PORT, () => {
+    console.log("Server running on process.env.PORT");
 })
