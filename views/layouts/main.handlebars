@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{#if title}}{{title}} | {{/if}}Recipe App</title>
+</head>
+<body>
+  <header>
+    <nav>
+      <a class="brand" href="/">Recipe App</a>
+      <a href="/users" class="{{#if isUsers}}active{{/if}}">Users</a>
+      <a href="/recipes" class="{{#if isRecipes}}active{{/if}}">Recipes</a>
+    </nav>
+  </header>
+
+  <main>
+    {{{body}}}
+  </main>
+</body>
+</html>
