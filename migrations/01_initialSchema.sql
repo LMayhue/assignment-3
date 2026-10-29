@@ -17,7 +17,7 @@ CREATE TABLE sessions (
 CREATE TABLE recipes (
     id SERIAL PRIMARY KEY,
     title TEXT NOT NULL,
-    desciption TEXT,
+    description TEXT,
     ingredients TEXT NOT NULL,
     instructions TEXT NOT NULL,
     prep_time INTEGER,
