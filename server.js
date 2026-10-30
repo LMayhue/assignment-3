@@ -1,7 +1,8 @@
+import 'dotenv/config'
 import express from 'express';
 import {engine} from 'express-handlebars';
-import {loggingMiddleware} from './middleware/logging';
-import {errorHandler} from './middleware/error-handling';
+import {loggingMiddleware} from './middleware/logging.js';
+import {errorHandler} from './middleware/error-handling.js';
 
 
 //Express & handlebars initialization
@@ -12,18 +13,17 @@ app.set('views', './views');
 
 
 //applicable middleware
+app.use(express.urlencoded({extended:true}));
 app.use(express.static("public"));
-app.use(loggingMiddleware);
 
+app.use(loggingMiddleware);
 app.use(errorHandler);
 
 
-
-
-//Endpoints
+//Endpoints, just for testing. Will get moved to a separate file later
 app.get("/", (req, res) => {
     res.render('home', {
-
+        title: "Home"
     });
 });
 
@@ -32,5 +32,5 @@ app.get("/", (req, res) => {
 
 //Start the server
 app.listen(process.env.PORT, () => {
-    console.log("Server running on process.env.PORT");
+    console.log(`Server running on ${process.env.PORT}`);
 })
