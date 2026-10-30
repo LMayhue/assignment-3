@@ -17,18 +17,18 @@ app.use(express.urlencoded({extended:true}));
 app.use(express.static("public"));
 
 app.use(loggingMiddleware);
+
 app.use(errorHandler);
 
+//Routers/endpoints
 
-//Endpoints, just for testing. Will get moved to a separate file later
+
+//For testing. Will get moved to a separate file later
 app.get("/", (req, res) => {
     res.render('home', {
         title: "Home"
     });
 });
-
-
-
 
 //Start the server
 app.listen(process.env.PORT, () => {
