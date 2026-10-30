@@ -29,7 +29,6 @@ CREATE TABLE recipes (
     updated_at TIMESTAMP
 );
 
-/*Needs a unique constraint on user_id and recipe_id*/
 CREATE TABLE ratings (
     id SERIAL PRIMARY KEY,
     recipe_id INTEGER NOT NULL,
@@ -40,7 +39,6 @@ CREATE TABLE ratings (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
-/*Needs a unique constraint on user_id and recipe_id*/
 CREATE TABLE favorites (
     id SERIAL PRIMARY KEY,
     recipe_id INTEGER NOT NULL,
