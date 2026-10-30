@@ -3,7 +3,10 @@ import express from 'express';
 import {engine} from 'express-handlebars';
 import {loggingMiddleware} from './middleware/logging.js';
 import {errorHandler} from './middleware/error-handling.js';
-
+import {homeRouter} from './controllers/home.js';
+//import {favoritesRouter} from './controllers/favorites.js';
+//import {recipesRouter} from './controllers/recipes.js';
+//import {userRouter} from './controllers/users.js';
 
 //Express & handlebars initialization
 const app = express();
@@ -21,7 +24,10 @@ app.use(loggingMiddleware);
 app.use(errorHandler);
 
 //Routers/endpoints
-
+app.use(homeRouter);
+//app.use(favoritesRouter);
+//app.use(recipesRouter);
+//app.use(userRouter);
 
 //For testing. Will get moved to a separate file later
 app.get("/", (req, res) => {
