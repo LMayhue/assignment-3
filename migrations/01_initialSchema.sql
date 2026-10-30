@@ -32,7 +32,7 @@ CREATE TABLE recipes (
 CREATE TABLE ratings (
     id SERIAL PRIMARY KEY,
     recipe_id INTEGER NOT NULL,
-    FOREIGN KEY (recipe_id) REFERENCES recipes(id),
+    FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
     user_id INTEGER NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
     rating INTEGER NOT NULL CHECK (rating >= 1 and rating <= 5),
@@ -42,7 +42,7 @@ CREATE TABLE ratings (
 CREATE TABLE favorites (
     id SERIAL PRIMARY KEY,
     recipe_id INTEGER NOT NULL,
-    FOREIGN KEY (recipe_id) REFERENCES recipes(id),
+    FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
     user_id INTEGER NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
     created_at TIMESTAMP DEFAULT NOW()
