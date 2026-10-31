@@ -1,4 +1,4 @@
-//All the recipe queries live here
+//All the recipe queries live in this file
 import {pool} from '../db/connection.js';
 
 //Set up starter query for all recipes
@@ -32,7 +32,7 @@ const escapeChars = (text) => {
 };
 
 
-//***READ DATABASE***
+//***READ ONLY QUERIES***
 //Include all functions that only read the database tables
 
 //Return all recipes with the optional search string
