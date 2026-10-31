@@ -1,5 +1,4 @@
 //Handles any/all database connections.
-
 import 'dotenv/config';
 import pg from 'pg';
 
