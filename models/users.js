@@ -3,7 +3,6 @@
 import pool from '../db/connection.js';
 
 //***READ ONLY QUERIES***
-
 //Find a user by Id
 export const findUserById = async (userId) => {
     const sql = `
@@ -53,8 +52,8 @@ export const verifyUser = async (userOrEmail) => {
     return result.rows[0];
 };
 
-//***MODIFY DATABASE QUERIES***
 
+//***MODIFY DATABASE QUERIES***
 //Create a user (returns user id)
 export const createUser = async (username, email, passHash) => {
     const sql = `
