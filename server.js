@@ -1,12 +1,14 @@
 import 'dotenv/config'
 import express from 'express';
 import {engine} from 'express-handlebars';
+import cookieParser from 'cookie-parser';
 import {loggingMiddleware} from './middleware/logging.js';
 import {errorHandler} from './middleware/error-handling.js';
 import {homeRouter} from './controllers/home.js';
 import {favoritesRouter} from './controllers/favorites.js';
 import {recipesRouter} from './controllers/recipes.js';
 import {userRouter} from './controllers/users.js';
+import { parseArgs } from 'util';
 
 //Express & handlebars initialization
 const app = express();
@@ -20,6 +22,7 @@ app.use(express.urlencoded({extended:true}));
 app.use(express.static("public"));
 
 app.use(loggingMiddleware);
+app.use(cookieParser());
 
 //Routers/endpoints
 app.use(homeRouter);
