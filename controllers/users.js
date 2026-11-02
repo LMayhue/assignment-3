@@ -16,7 +16,7 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 //GET /users/:id - View a user's profile showing their recipes
 userRouter.get('/login/:id', async (req, res) => {
     //Get the info needed to make the page (user, users recipes)
-    const userId = req.params.id;
+    const userId = parseint(req.params.id);
     const profile = await findUserById(userId);
     const recipes = await getRecipesByUserId(userId);
 
