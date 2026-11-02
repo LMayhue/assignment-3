@@ -18,7 +18,7 @@ export const createSession = async (userId) => {
 //find a user based on the session id
 export const findUserBySession = async (sessionId) => {
     const sql = `
-        SELECT users.id, users.username, users.email, users.create_at
+        SELECT users.id, users.username, users.email, users.created_at
         FROM sessions
         JOIN users ON users.id = sessions.user_id
         WHERE sessons.session_id = $1

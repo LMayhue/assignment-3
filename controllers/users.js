@@ -99,4 +99,3 @@ userRouter.post('/register', async (req, res) => {
 
 //***REQUIRE AUTH***
     // POST /logout - Logout
-    // GET /my-recipes - View the current user's own recipes
