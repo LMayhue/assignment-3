@@ -4,11 +4,12 @@ import {engine} from 'express-handlebars';
 import cookieParser from 'cookie-parser';
 import {loggingMiddleware} from './middleware/logging.js';
 import {errorHandler} from './middleware/error-handling.js';
+import {loadUser} from './middleware/auth.js';
 import {homeRouter} from './controllers/home.js';
 import {favoritesRouter} from './controllers/favorites.js';
 import {recipesRouter} from './controllers/recipes.js';
 import {userRouter} from './controllers/users.js';
-import { parseArgs } from 'util';
+
 
 //Express & handlebars initialization
 const app = express();
@@ -23,6 +24,7 @@ app.use(express.static("public"));
 
 app.use(loggingMiddleware);
 app.use(cookieParser());
+app.use(loadUser)
 
 //Routers/endpoints
 app.use(homeRouter);
@@ -30,7 +32,7 @@ app.use(favoritesRouter);
 app.use(recipesRouter);
 app.use(userRouter);
 
-//Error handler
+//Error handler, needs to come after everything else
 app.use(errorHandler);
 
 //Start the server
