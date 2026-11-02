@@ -11,7 +11,13 @@ import {
 
 export const recipesRouter = express.Router();
 
-//***PUBLIC***
+const checkRecipeOwner = async (recipe, req) => {
+    if (recipe.user_id == req.user.id) {
+        return true;
+    }
+    return false;
+}
+
 //GET /recipes - Browse all recipes
 recipesRouter.get('/recipes', async (req, res)=> {
     //get all the recipes (w/ optional search term)
@@ -30,6 +36,13 @@ recipesRouter.get('/recipes', async (req, res)=> {
     });
 });
 
+//GET /recipes/new - Display form to create a new recipe
+recipesRouter.get('/recipes/new', requireLogin, (req, res) => {
+    res.render('recipes/new', {
+        title: 'New Recipe'
+    })
+});
+
 //GET /recipes/:id - View a single recipe with its details and number of favorites
 recipesRouter.get('/recipes/:id', async (req, res) => {
     //get the recipe from the id
@@ -40,18 +53,44 @@ recipesRouter.get('/recipes/:id', async (req, res) => {
         return res.status(404);
     }
 
+    //display the recipe page
     res.render('recipes/show', {
         title: recipe.title,
         recipe
     })
-    //display the recipe page
 })
 
 //***PROTECTED***
-    //GET /recipes/new - Display form to create a new recipe
-    //POST /recipes - Create a new recipe
-    //GET /recipes/:id/edit - Display form to edit a recipe (only the recipe owner can edit)
-    //POST /recipes/:id - Update a recipe (only the recipe owner can update)
-    //POST /recipes/:id/delete - Delete a recipe (only the recipe owner can delete)
-    //POST /recipes/:id/rate - Rate a recipe (1-5 stars)
-    //POST /recipes/:id/favorite - Add/remove a recipe from favorites
+//POST /recipes - Create a new recipe
+
+
+//GET /recipes/:id/edit - Display form to edit a recipe (only the recipe owner can edit)
+recipesRouter.get('/recipes/:id/edit', requireLogin, async (req, res) => {
+    const recipe = await getRecipeById(Number(req.params.id));
+    if (!checkRecipeOwner(recipe, req)) {
+        return res.status(403);
+    };
+
+    res.render('recipes/edit', {
+        title: `Edit ${recipe.title} Recipe`,
+        recipe
+    });
+});
+
+// GET /my-recipes - View the current user's own recipes
+recipesRouter.get('/my-recipes', requireLogin, async (req, res) => {
+    const recipes = await getRecipesByUserId(req.user.id);
+
+    res.render('my-recipes', {
+        title: 'My Recipes',
+        recipes
+    });
+});
+
+//POST /recipes/:id - Update a recipe (only the recipe owner can update)
+
+
+//POST /recipes/:id/delete - Delete a recipe (only the recipe owner can delete)
+
+
+//POST /recipes/:id/favorite - Add/remove a recipe from favorites
