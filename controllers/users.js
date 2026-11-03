@@ -2,6 +2,7 @@ import express from 'express';
 import bcrypt from 'bcrypt';
 import {createUser, findUserById, findUserByUsername, findUserByEmail, verifyUser} from '../models/users.js';
 import {getRecipesByUserId} from '../recipes.js';
+import {requireLogin, endSession, startSession} from '../middleware/auth.js';
 
 export const userRouter = express.Router();
 
@@ -36,8 +37,47 @@ userRouter.get('/login', (req, res) => {
     });
 });
 
-//POST /login - actually login
+//POST /login - actually login (User can use username or email)
+userRouter.post('/login', async (req, res) => {
+    //Address to redirect the user to after login
+    const redirect = req.body.redirect;
 
+    //If a field is empty, tell the user
+    const errors = [];
+    if (req.body.username === '') {
+        errors.push('Please enter your username or email.');
+    }
+    if (req.body.password === '') {
+        errors.push('Please enter your password.');
+    }
+    if (errors.length > 0) {
+        res.status(400).render('users/login', {
+            title: 'Log In',
+            input: req.body.usernameEmail,
+            errors,
+            redirect
+        })
+    };
+
+    //Verify the password for the given user
+    const correctUser = await verifyUser(req.body.usernameEmail);
+    const userPassHash = correctUser.password_hash;
+    const passwordMatch = await bcrypt.compare(req.body.password, userPassHash)
+
+    //if the password is not correct, tell the user and don't log in
+    if (!passwordMatch) {
+        res.status(401).render('users/login', {
+            title: 'Log in',
+            errors: ['Wrong username/email or password'],
+            input: req.body.usernameEmail,
+            redirect
+        })
+    };
+    
+    //start the session & cookie if password is correct
+    await startSession(res, req.user.id);
+    res.redirect(redirect);
+});
 
 //GET /register - Registration page
 userRouter.get('/register', (req, res) => {
@@ -87,9 +127,8 @@ userRouter.post('/register', async (req, res) => {
         })
     }
 
-    //Start creating the user
+    //Create the user after creating the password hash
     const passHash = await bcrypt.hash(password, SALT_ROUNDS);
-
     const newUser = await createUser(username, email, passHash);
 
     //Start a session and redirect the user to '/'
@@ -98,4 +137,8 @@ userRouter.post('/register', async (req, res) => {
 });
 
 //***REQUIRE AUTH***
-    // POST /logout - Logout
+// POST /logout - Logout the user, remove the cookie & session
+userRouter.post('/logout', requireLogin, async (req, res) => {
+    await endSession(req, res);
+    res.redirect('/');
+});
