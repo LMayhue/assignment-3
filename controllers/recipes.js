@@ -179,8 +179,15 @@ recipesRouter.post('/recipes/:id', requireLogin, async (req, res) => {
     res.redirect(`/recipes/${thisRecipe.id}`);
 });
 
-
 //POST /recipes/:id/delete - Delete a recipe (only the recipe owner can delete)
+recipesRouter.post('/recipes/:id/delete', requireLogin, async (req, res) => {
+    const recipe = getRecipeById(Number(req.params.id));
+    if (!checkRecipeOwner(recipe, req)) {
+        return res.status(403);
+    };
 
+    await deleteRecipe(recipe.id);
+    res.redirect('/my-recipes');
+});
 
 //POST /recipes/:id/favorite - Add/remove a recipe from favorites
