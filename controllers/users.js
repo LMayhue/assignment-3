@@ -44,7 +44,7 @@ userRouter.post('/login', async (req, res) => {
 
     //If a field is empty, tell the user
     const errors = [];
-    if (req.body.username === '') {
+    if (req.body.usernameEmail === '') {
         errors.push('Please enter your username or email.');
     }
     if (req.body.password === '') {
@@ -88,7 +88,7 @@ userRouter.get('/register', (req, res) => {
     
 //POST /register - actually create a new user
 userRouter.post('/register', async (req, res) => {
-    const username = req.body.username.username.trim();
+    const username = req.body.username.trim();
     const email = req.body.email.trim();
     const password = req.body.password;
 
@@ -98,7 +98,6 @@ userRouter.post('/register', async (req, res) => {
     //collect a list of all the input faults to display
     const errors = [];
 
-    //Validate inputs, push to 'errors' if something is wrong
     if (username == "") {
         errors.push("A Username is required.");
     }
