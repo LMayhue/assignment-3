@@ -14,10 +14,12 @@ const formatDate = (date) => {
     const dateOptions = {
         year: 'numeric',
         month: 'short',
-        day: 'numeric'
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit'
     };
 
-    return new Date(date).toLocaleDateString('en-US', options);
+    return new Date(date).toLocaleString('en-US', options);
 };
 
 

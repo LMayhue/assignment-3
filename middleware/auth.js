@@ -22,9 +22,9 @@ export const loadUser = async (req, res, next) => {
 
 //Require a user be logged in to access the resource
 export const requireLogin = (req, res, next) => {
-    if (!res.user) {
+    if (!req.user) {
         const error = new Error;
-        error.status(401);
+        error.statusCode = 401;
         next(error); //auth error, sends to error handler
     };
     next();
