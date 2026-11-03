@@ -191,3 +191,6 @@ recipesRouter.post('/recipes/:id/delete', requireLogin, async (req, res) => {
 });
 
 //POST /recipes/:id/favorite - Add/remove a recipe from favorites
+recipesRouter.post('/recipes/:id/favorite', requireLogin, async (req, res) => {
+    
+});
