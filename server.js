@@ -10,23 +10,35 @@ import {favoritesRouter} from './controllers/favorites.js';
 import {recipesRouter} from './controllers/recipes.js';
 import {userRouter} from './controllers/users.js';
 
+const formatDate = (date) => {
+    const dateOptions = {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    };
+
+    return new Date(date).toLocaleDateString('en-US', options);
+};
+
 
 //Express & handlebars initialization
 const app = express();
-app.engine("handlebars", engine());
+app.engine("handlebars", engine({
+    helpers: {
+        formatDate
+    }
+}));
 app.set('view engine', 'handlebars');
 app.set('views', './views');
 
-
 //applicable middleware
-app.use(express.urlencoded({extended:true}));
-app.use(express.static("public"));
+app.use(express.urlencoded({extended:true})); //Get url params
+app.use(express.static("public")); //Serve statics
+app.use(loggingMiddleware); //Log req, res
+app.use(cookieParser()); //Parse cookies
+app.use(loadUser); // Load the user id from cookie
 
-app.use(loggingMiddleware);
-app.use(cookieParser());
-app.use(loadUser)
-
-//Routers/endpoints
+//Routers/handlers
 app.use(homeRouter);
 app.use(favoritesRouter);
 app.use(recipesRouter);
