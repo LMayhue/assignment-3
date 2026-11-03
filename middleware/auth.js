@@ -1,5 +1,5 @@
 //All authentication stuff happens here
-import {createSession, findUserBySession, deleteSession} from '../models/session.js';
+import {createSession, findUserBySession, deleteSession} from '../models/sessions.js';
 
 //Load in a user if the session cookie is valid
 export const loadUser = async (req, res, next) => {
@@ -25,7 +25,7 @@ export const requireLogin = (req, res, next) => {
     if (!req.user) {
         const error = new Error;
         error.statusCode = 401;
-        next(error); //auth error, sends to error handler
+        return error; //auth error, sends to error handler
     };
     next();
 };
@@ -35,7 +35,7 @@ export const startSession = async (res, userId) => {
     const newSession = await createSession(userId);
 
     res.cookie('session_id', newSession, {
-    maxAge: 60 * 60 * 1000, // 1 minute in milliseconds
+    maxAge: 60 * 1000, // 1 minute in milliseconds
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax'

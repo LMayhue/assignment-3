@@ -1,7 +1,7 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
 import {createUser, findUserById, findUserByUsername, findUserByEmail, verifyUser} from '../models/users.js';
-import {getRecipesByUserId} from '../recipes.js';
+import {getRecipesByUserId} from '../models/recipes.js';
 import {requireLogin, endSession, startSession} from '../middleware/auth.js';
 
 export const userRouter = express.Router();
@@ -15,10 +15,15 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 //***PUBLIC***
 //GET /users/:id - View a user's profile showing their recipes
-userRouter.get('/login/:id', async (req, res) => {
+userRouter.get('/users/:id', async (req, res) => {
     //Get the info needed to make the page (user, users recipes)
-    const userId = parseint(req.params.id);
+    const userId = parseInt(req.params.id);
     const profile = await findUserById(userId);
+    //if the user doesn't exist, send 404
+    if (!profile) {
+        return res.status(404);
+    }
+
     const recipes = await getRecipesByUserId(userId);
 
     res.render('users/show', {

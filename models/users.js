@@ -1,6 +1,6 @@
 //All the users queries live in this file
 //ONLY PULL THE PASSWORD HASH WHEN NECCESSARY (security reasons)
-import pool from '../db/connection.js';
+import {pool} from '../db/connection.js';
 
 //***READ ONLY QUERIES***
 //Find a user by Id
@@ -39,7 +39,7 @@ export const findUserByEmail = async (userEmail) => {
     return result.rows[0];
 };
 
-//Find a user, verify login (needs passHash)(Could use username or email)
+//Find a user whos trying to log in, verify password (needs passHash)(Could use username or email)
 export const verifyUser = async (userOrEmail) => {
     const sql = `
         SELECT id, username, email, password_hash
@@ -68,5 +68,5 @@ export const createUser = async (username, email, passHash) => {
     const userValues = [username, email, passHash];
 
     const result = await pool.query(sql, userValues);
-    return result.rows;
+    return result.rows[0];
 };

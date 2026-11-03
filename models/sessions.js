@@ -1,6 +1,6 @@
 //All sessions queries abide in this locale
 import crypto from 'crypto';
-import pool from '../db/connection.js';
+import {pool} from '../db/connection.js';
 
 //Create a new session tied to a user id. Session id will then be used in a cookie
 export const createSession = async (userId) => {
@@ -21,7 +21,7 @@ export const findUserBySession = async (sessionId) => {
         SELECT users.id, users.username, users.email, users.created_at
         FROM sessions
         JOIN users ON users.id = sessions.user_id
-        WHERE sessons.session_id = $1
+        WHERE sessions.session_id = $1
     `;
 
     const result = await pool.query(sql, [sessionId]);

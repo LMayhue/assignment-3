@@ -48,9 +48,9 @@ export const getAllRecipes = async (searchStr) => {
         searchValues.push(`%${escapeChars(searchStr)}%`); 
     }
 
-    //Make all the recipes appear in descending order from when they were updated
+    //Make all the recipes appear in descending order from when they were updated (null uses created_at)
     sql += `
-        ORDER BY recipes.updated_at DESC
+        ORDER BY COALESCE(recipes.updated_at, recipes.created_at) DESC
     `;
 
     const result = await pool.query(sql, searchValues);
@@ -72,7 +72,7 @@ export const getRecipeById = async (recipeId) => {
 export const getRecipesByUserId = async (userId) => {
     const sql = `
         ${BASIC_QUERY}
-        WHERE author = $1
+        WHERE recipes.user_id = $1
         ORDER BY recipes.created_at DESC
     `;
 
@@ -85,7 +85,7 @@ export const getUserFavoriteRecipes = async (userId) => {
     const sql = `
         ${BASIC_QUERY}
         JOIN favorites ON favorites.recipe_id = recipes.id
-        WHERE favortes.user_id = $1
+        WHERE favorites.user_id = $1
         ORDER BY favorites.created_at DESC
     `;
 
@@ -129,8 +129,8 @@ export const createRecipe = async (userId, values) => {
         values.description,
         values.ingredients,
         values.instructions,
-        values.prepTime,
-        values.cookTime,
+        values.prep_time,
+        values.cook_time,
         values.servings,
         userId,
     ];
@@ -160,8 +160,8 @@ export const editRecipe = async (recipeId, values) => {
         values.description,
         values.ingredients,
         values.instructions,
-        values.prepTime,
-        values.cookTime,
+        values.prep_time,
+        values.cook_time,
         values.servings,
         recipeId
     ];
