@@ -69,9 +69,9 @@ const readRecipeForm = (body) => {
     const description = body.description;
     const ingredients = body.ingredients;
     const instructions = body.instructions;
-    const prepTimeStr = body.prep_time;
-    const cookTimeStr = body.cook_time;
-    const servingsStr = body.servings;
+    const prepTime = body.prep_time;
+    const cookTime = body.cook_time;
+    const servings = body.servings;
 
     //Verify required fields are present
     if (title === '') {
@@ -85,7 +85,13 @@ const readRecipeForm = (body) => {
     };
 
     const formFields = {
-
+        title,
+        description,
+        ingredients,
+        instructions,
+        prep_time: prepTime,
+        cook_time: cookTime,
+        servings
     }
 
     return {formFields, errors}
@@ -96,6 +102,23 @@ const readRecipeForm = (body) => {
 recipesRouter.post('/recipes', requireLogin, async (req, res) => {
     //Verify all the inputs are valid
     const {formItems, errors} = readRecipeForm(req.body);
+    if (errors.length > 0) {
+        return res.status(400).render('recipes/new', {
+            title: 'New Recipe',
+            recipe: formItems,
+            errors
+        });
+    }
+
+    const recipeData = {
+        title: formItems.title,
+        description: formItems.description, 
+        ingredients: formItems.ingredients,
+        instructions: formItems.instructions,
+        prep_time: Number(formItems.prepTimeStr),
+        cook_time: Number(formItems.cookTimeStr),
+        servings: Number(formItems.servingsStr)
+    };
 
     //Save recipe, redirect to recipe page
     const newRecipe = await createRecipe(req.user.id, recipeData);
@@ -127,6 +150,34 @@ recipesRouter.get('/my-recipes', requireLogin, async (req, res) => {
 });
 
 //POST /recipes/:id - Update a recipe (only the recipe owner can update)
+recipesRouter.post('/recipes/:id', requireLogin, async (req, res) => {
+    const thisRecipe = await getRecipeById(Number(req.params.id));
+    if (!checkRecipeOwner(thisRecipe, req)) {
+        return res.status(403);
+    };
+
+    const {formItems, errors} = readRecipeForm(req.body);
+    if (errors.length > 0) {
+        return res.status(400).render('recipes/edit', {
+            title: `Edit ${thisRecipe.title}`,
+            errors,
+            recipe: formItems
+        });
+    };
+
+    const recipeValues = {
+        title: formItems.title,
+        description: formItems.description, 
+        ingredients: formItems.ingredients,
+        instructions: formItems.instructions,
+        prep_time: Number(formItems.prepTimeStr),
+        cook_time: Number(formItems.cookTimeStr),
+        servings: Number(formItems.servingsStr)
+    };
+
+    await editRecipe(thisRecipe.id, recipeValues);
+    res.redirect(`/recipes/${thisRecipe.id}`);
+});
 
 
 //POST /recipes/:id/delete - Delete a recipe (only the recipe owner can delete)
