@@ -60,8 +60,47 @@ recipesRouter.get('/recipes/:id', async (req, res) => {
     })
 })
 
+//Reads the html form and verifies inputs are valid
+const readRecipeForm = (body) => {
+    const errors = [];
+    //Requires title, ingredients, instructions. DB requires adtl user_id
+
+    const title = body.title;
+    const description = body.description;
+    const ingredients = body.ingredients;
+    const instructions = body.instructions;
+    const prepTimeStr = body.prep_time;
+    const cookTimeStr = body.cook_time;
+    const servingsStr = body.servings;
+
+    //Verify required fields are present
+    if (title === '') {
+        errors.push('Title is required.');
+    };
+    if (ingredients === '') {
+        errors.push('Ingredients are required.');
+    };
+    if (instructions === '') {
+        errors.push('Instructions are required.');
+    };
+
+    const formFields = {
+
+    }
+
+    return {formFields, errors}
+};
+
 //***PROTECTED***
 //POST /recipes - Create a new recipe
+recipesRouter.post('/recipes', requireLogin, async (req, res) => {
+    //Verify all the inputs are valid
+    const {formItems, errors} = readRecipeForm(req.body);
+
+    //Save recipe, redirect to recipe page
+    const newRecipe = await createRecipe(req.user.id, recipeData);
+    res.redirect(`/recipes/${newRecipe.id}`);
+});
 
 
 //GET /recipes/:id/edit - Display form to edit a recipe (only the recipe owner can edit)

@@ -65,7 +65,7 @@ export const getRecipeById = async (recipeId) => {
     `;
 
     const result = await pool.query(sql, [recipeId]);
-    return result.rows;
+    return result.rows[0];
 };
 
 //Return recipes written by a specific user
@@ -136,7 +136,7 @@ export const createRecipe = async (userId, values) => {
     ];
 
     const result = await pool.query(sql, recipeValues);
-    return result.rows;
+    return result.rows[0];
 };
 
 //Edit a recipe
@@ -167,7 +167,7 @@ export const editRecipe = async (recipeId, values) => {
     ];
 
     const result = await pool.query(sql, updateValues);
-    return result.rows;
+    return result.rows[0];
 };
 
 //Delete a recipe. Returns the number of rows deleted (1 = success, 0 = fail/ didn't exist)
