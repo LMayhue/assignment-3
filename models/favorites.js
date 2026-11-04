@@ -56,10 +56,10 @@ export const getFavoritesByUserId = async (userId) => {
     return result.rows.map(row => row.recipe_id);
 }
 
-// Add `is_favorited` to each recipe in a list
+// Add `is_favorited` to each recipe in a given recipe list
     //This makes marking favorites easier in the templates
-export const markFavorites = (recipes, userId) => {
-    const favorites = getFavoritesByUserId(userId);
+export const markFavorites = async(recipes, userId) => {
+    const favorites = await getFavoritesByUserId(userId);
     for (const recipe of recipes) {
         //adds true to each. Recipes without this tag are seen as false
         recipe.is_favorited = favorites.includes(recipe.id);
