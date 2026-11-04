@@ -12,7 +12,7 @@ export const errorHandler = (error, req, res, next) => {
     //403 = not allowed to see this as the logged in user
     if (error.statusCode == 403) {
         res.status(403);
-        res.render('error', {
+        return res.render('error', {
             title: 'Not Allowed',
             message: `You are not allowed to see ${req.path}`
         })
@@ -21,7 +21,7 @@ export const errorHandler = (error, req, res, next) => {
     //404 = resource was not found
     if (error.statusCode == 404) {
         res.status(404);
-        res.render('error', {
+         return res.render('error', {
             title: 'Not Found',
             message: `${req.path} was not found`
         })
@@ -31,6 +31,6 @@ export const errorHandler = (error, req, res, next) => {
     res.status(500);
     res.render('error', {
         title: 'Uh Oh',
-        message: 'Something went wrong.'
+        message: 'Something special went wrong.'
     });
 };

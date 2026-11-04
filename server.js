@@ -46,6 +46,13 @@ app.use(favoritesRouter);
 app.use(recipesRouter);
 app.use(userRouter);
 
+//If a path happens that doesn't get caught by a handler, it's a 404
+app.use((req, res, next) => {
+    const error = new Error();
+    error.statusCode = 404;
+    next(error);
+});
+
 //Error handler, needs to come after everything else
 app.use(errorHandler);
 

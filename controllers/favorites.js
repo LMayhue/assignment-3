@@ -6,8 +6,8 @@ export const favoritesRouter = express.Router();
 
 //***REQUIRES AUTH.***
 //Display a users favorites
-favoritesRouter.get('/favorites', requireLogin, (req, res) => {
-    const recipes = getUserFavoriteRecipes(req.user.id);
+favoritesRouter.get('/favorites', requireLogin, async (req, res) => {
+    const recipes = await getUserFavoriteRecipes(req.user.id);
 
     res.render('favorites', {
         title: 'Favorites',
