@@ -56,7 +56,7 @@ userRouter.post('/login', async (req, res) => {
         errors.push('Please enter your password.');
     }
     if (errors.length > 0) {
-        res.status(400).render('users/login', {
+        return res.status(400).render('users/login', {
             title: 'Log In',
             input: req.body.usernameEmail,
             errors,
@@ -64,24 +64,33 @@ userRouter.post('/login', async (req, res) => {
         })
     };
 
-    //Verify the password for the given user
+    //Make sure the username/email given actually exists
     const correctUser = await verifyUser(req.body.usernameEmail);
+    if (!correctUser) {
+        return res.status(401).render('users/login', {
+            title: 'Log in',
+            errors: ['Wrong username/email or password.'],
+            input: req.body.usernameEmail,
+            redirect
+        });
+    };
+
+    //Verify the password matches the given user
     const userPassHash = correctUser.password_hash;
     const passwordMatch = await bcrypt.compare(req.body.password, userPassHash)
-
     //if the password is not correct, tell the user and don't log in
     if (!passwordMatch) {
-        res.status(401).render('users/login', {
+        return res.status(401).render('users/login', {
             title: 'Log in',
             errors: ['Wrong username/email or password'],
             input: req.body.usernameEmail,
             redirect
-        })
+        });
     };
     
-    //start the session & cookie if password is correct
-    await startSession(res, req.user.id);
-    res.redirect(redirect);
+    //start the session & cookie, redirect the user to either the requested URI or '/' if redirect is empty
+    await startSession(res, correctUser.id);
+    res.redirect(redirect || '/');
 });
 
 //GET /register - Registration page
@@ -97,8 +106,8 @@ userRouter.post('/register', async (req, res) => {
     const email = req.body.email.trim();
     const password = req.body.password;
 
-    const existingUser = findUserByUsername(username);
-    const existingEmail = findUserByEmail(email);
+    const existingUser = await findUserByUsername(username);
+    const existingEmail = await findUserByEmail(email);
 
     //collect a list of all the input faults to display
     const errors = [];
