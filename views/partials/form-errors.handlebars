@@ -1,0 +1,14 @@
+{{!--
+  Shows a list of validation errors.
+  Use in any form page:   {{> form-errors}}
+  Expects `errors` (an array of strings) in the page context.
+--}}
+{{#if errors}}
+  <div class="alert alert-error" role="alert">
+    <ul>
+      {{#each errors}}
+        <li>{{this}}</li>
+      {{/each}}
+    </ul>
+  </div>
+{{/if}}

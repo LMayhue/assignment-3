@@ -3,19 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{#if title}}{{title}} | {{/if}}Recipe App</title>
+  {{!-- Page title: "<page title> | Logan's Recipe Service" --}}
+  <title>{{#if title}}{{title}} | {{/if}}Logan's Recipe Service</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <header>
-    <nav>
-      <a class="brand" href="/">Recipe App</a>
-      <a href="/users" class="{{#if isUsers}}active{{/if}}">Users</a>
-      <a href="/recipes" class="{{#if isRecipes}}active{{/if}}">Recipes</a>
+  <header class="site-header">
+    <nav class="nav">
+      <a class="brand" href="/">Logan's Recipe Service</a>
+
+      <div class="nav-links">
+        {{!-- Links everyone sees --}}
+        <a href="/">Home</a>
+        <a href="/recipes">Browse Recipes</a>
+
+        {{!-- `user` comes from res.locals.user (set in loadUser middleware) --}}
+        {{#if user}}
+          <a href="/recipes/new">New Recipe</a>
+          <a href="/my-recipes">My Recipes</a>
+          <a href="/favorites">Favorites</a>
+
+          {{!-- Show who is logged in, linked to their profile --}}
+          <span class="nav-user">
+            Hi, <a href="/users/{{user.id}}">{{user.username}}</a>
+          </span>
+
+          {{!-- Logout must be a POST, so it is a form with a button --}}
+          <form class="nav-logout" method="POST" action="/logout">
+            <button type="submit" class="btn btn-small btn-secondary">Logout</button>
+          </form>
+        {{else}}
+          <a href="/login">Login</a>
+          <a href="/register" class="btn btn-small">Register</a>
+        {{/if}}
+      </div>
     </nav>
   </header>
 
-  <main>
+  <main class="container">
     {{{body}}}
   </main>
+
+  <footer class="site-footer">
+    <p>Logan's Recipe Service &middot; CS2610</p>
+  </footer>
+
+  {{!-- Confirm popups for forms with a data-confirm attribute (e.g. delete) --}}
+  <script src="/js/script.js"></script>
 </body>
 </html>

@@ -1,0 +1,39 @@
+{{!--
+  Reusable recipe card.
+  Use inside an {{#each recipes}} loop:   {{> recipe-card}}
+  The current context is one recipe row from BASIC_QUERY
+  (id, title, description, prep_time, cook_time, servings, user_id, author, favorite_count).
+
+  Optional: pass favorited=true to show a filled heart:   {{> recipe-card favorited=true}}
+--}}
+<article class="card recipe-card">
+  <h3 class="card-title">
+    <a href="/recipes/{{id}}">{{title}}</a>
+  </h3>
+
+  <p class="card-meta">
+    by <a href="/users/{{user_id}}">{{author}}</a>
+  </p>
+
+  {{!-- Description is optional in the database --}}
+  {{#if description}}
+    <p class="card-text">{{description}}</p>
+  {{/if}}
+
+  <ul class="card-stats">
+    {{#if prep_time}}
+      <li>Prep {{prep_time}} min</li>
+    {{/if}}
+    {{#if cook_time}}
+      <li>Cook {{cook_time}} min</li>
+    {{/if}}
+    {{#if servings}}
+      <li>Serves {{servings}}</li>
+    {{/if}}
+
+    {{!-- Heart + favorite count --}}
+    <li class="fav-count {{#if favorited}}is-favorited{{/if}}">
+      {{#if favorited}}&#9829;{{else}}&#9825;{{/if}} {{favorite_count}}
+    </li>
+  </ul>
+</article>

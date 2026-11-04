@@ -1,1 +1,30 @@
-{{!-- Login. Get a username and a password --}}
+{{!--
+  Login form. Controller passes: title, redirect, and on error: input, errors
+  Fields posted: usernameEmail, password, redirect (hidden)
+--}}
+<div class="form-page form-page-narrow">
+  <h1>Log In</h1>
+
+  {{> form-errors}}
+
+  <form class="card form-card" method="POST" action="/login">
+    {{!-- Hidden field carries the page the user was trying to reach --}}
+    <input type="hidden" name="redirect" value="{{redirect}}">
+
+    <div class="form-group">
+      <label for="usernameEmail">Username or Email</label>
+      <input type="text" id="usernameEmail" name="usernameEmail" value="{{input}}" autocomplete="username">
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" autocomplete="current-password">
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-block">Log In</button>
+    </div>
+  </form>
+
+  <p class="form-footer">Don't have an account? <a href="/register">Register</a></p>
+</div>

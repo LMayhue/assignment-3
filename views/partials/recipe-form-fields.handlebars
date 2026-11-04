@@ -1,0 +1,45 @@
+{{!--
+  The input fields shared by recipes/new and recipes/edit.
+  Field `name` attributes match what readRecipeForm() reads from req.body:
+    title, description, ingredients, instructions, prep_time, cook_time, servings
+  `recipe` pre-fills the fields (existing recipe on edit, or the submitted values after a validation error).
+
+  Note: no `required` attributes on purpose, so the server-side validation can be tested.
+--}}
+<div class="form-group">
+  <label for="title">Title <span class="required-mark">*</span></label>
+  <input type="text" id="title" name="title" value="{{recipe.title}}">
+</div>
+
+<div class="form-group">
+  <label for="description">Description</label>
+  <textarea id="description" name="description" rows="3">{{recipe.description}}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="ingredients">Ingredients <span class="required-mark">*</span></label>
+  <textarea id="ingredients" name="ingredients" rows="8" placeholder="One ingredient per line">{{recipe.ingredients}}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="instructions">Instructions <span class="required-mark">*</span></label>
+  <textarea id="instructions" name="instructions" rows="10" placeholder="One step per line">{{recipe.instructions}}</textarea>
+</div>
+
+{{!-- The three number fields sit side by side on wider screens --}}
+<div class="form-row">
+  <div class="form-group">
+    <label for="prep_time">Prep time (min)</label>
+    <input type="number" id="prep_time" name="prep_time" min="0" value="{{recipe.prep_time}}">
+  </div>
+
+  <div class="form-group">
+    <label for="cook_time">Cook time (min)</label>
+    <input type="number" id="cook_time" name="cook_time" min="0" value="{{recipe.cook_time}}">
+  </div>
+
+  <div class="form-group">
+    <label for="servings">Servings</label>
+    <input type="number" id="servings" name="servings" min="1" value="{{recipe.servings}}">
+  </div>
+</div>

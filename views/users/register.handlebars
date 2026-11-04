@@ -1,4 +1,33 @@
-{{!-- Create a new user. Username needs:
- - username
- - email
- - password --}}
+{{!--
+  Registration form. Controller passes: title, and on error: errors, username, email
+  Fields posted: username, email, password
+  (Password is never sent back into the form after an error.)
+--}}
+<div class="form-page form-page-narrow">
+  <h1>Register</h1>
+
+  {{> form-errors}}
+
+  <form class="card form-card" method="POST" action="/register">
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" value="{{username}}" autocomplete="username">
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" value="{{email}}" autocomplete="email">
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" autocomplete="new-password">
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-block">Create Account</button>
+    </div>
+  </form>
+
+  <p class="form-footer">Already have an account? <a href="/login">Log in</a></p>
+</div>

@@ -1,0 +1,24 @@
+{{!--
+  Edit recipe form. Controller passes: title, recipe, and on error: errors
+  The form posts to /recipes/{{recipe.id}}, so `recipe.id` must be present,
+  including when the page is re-rendered after a validation error.
+--}}
+<div class="form-page">
+  <h1>Edit Recipe</h1>
+
+  {{> form-errors}}
+
+  <form class="card form-card" method="POST" action="/recipes/{{recipe.id}}">
+    {{> recipe-form-fields}}
+
+    <div class="form-actions">
+      <button type="submit" class="btn">Save Changes</button>
+      <a href="/recipes/{{recipe.id}}" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+
+  {{!-- Separate form so Delete is its own POST, with a confirm popup --}}
+  <form class="danger-zone" method="POST" action="/recipes/{{recipe.id}}/delete" data-confirm="Delete this recipe? This cannot be undone.">
+    <button type="submit" class="btn btn-danger">Delete Recipe</button>
+  </form>
+</div>

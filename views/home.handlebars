@@ -1,3 +1,25 @@
-<h1>Welcome to Logan's Recipe Service</h1>
-<p>Browse recipes or see who's sharing them.</p>
+{{!-- Home page. Controller passes: title, recentRecipes --}}
+<section class="hero">
+  <h1>Welcome to Logan's Recipe Service</h1>
+  <p>Browse recipes or see who's sharing them.</p>
 
+  {{!-- Search sends ?q=... to GET /recipes --}}
+  <form class="search-form" method="GET" action="/recipes">
+    <input type="search" name="q" placeholder="Search by title or ingredient" aria-label="Search recipes">
+    <button type="submit" class="btn">Search</button>
+  </form>
+</section>
+
+<section>
+  <h2>Most Recent</h2>
+
+  {{#if recentRecipes}}
+    <div class="card-grid">
+      {{#each recentRecipes}}
+        {{> recipe-card}}
+      {{/each}}
+    </div>
+  {{else}}
+    <p class="empty-state">No recipes yet. <a href="/recipes/new">Be the first to add one.</a></p>
+  {{/if}}
+</section>

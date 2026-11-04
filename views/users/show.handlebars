@@ -1,0 +1,23 @@
+{{!-- User profile. Controller passes: title, profile, recipes, recipeCount --}}
+<section class="profile-header card">
+  <h1>{{profile.username}}</h1>
+
+  <ul class="profile-stats">
+    <li><strong>{{recipeCount}}</strong> recipe(s)</li>
+    <li>Joined {{profile.created_at}}</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Recipes by {{profile.username}}</h2>
+
+  {{#if recipes}}
+    <div class="card-grid">
+      {{#each recipes}}
+        {{> recipe-card}}
+      {{/each}}
+    </div>
+  {{else}}
+    <p class="empty-state">{{profile.username}} hasn't shared any recipes yet.</p>
+  {{/if}}
+</section>

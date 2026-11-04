@@ -1,0 +1,15 @@
+{{!-- Create recipe form. Controller passes: title, and on error: recipe (submitted values), errors --}}
+<div class="form-page">
+  <h1>New Recipe</h1>
+
+  {{> form-errors}}
+
+  <form class="card form-card" method="POST" action="/recipes">
+    {{> recipe-form-fields}}
+
+    <div class="form-actions">
+      <button type="submit" class="btn">Create Recipe</button>
+      <a href="/my-recipes" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+</div>

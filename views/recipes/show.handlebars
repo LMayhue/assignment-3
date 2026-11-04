@@ -1,0 +1,82 @@
+{{!--
+  Single recipe page.
+  Controller currently passes: title, recipe
+  This template ALSO expects two booleans the controller does not pass yet:
+    isOwner     - true when req.user.id === recipe.user_id (shows Edit/Delete)
+    isFavorited - true when the logged-in user has favorited this recipe (fills the heart)
+--}}
+<article class="recipe-detail">
+  <header class="recipe-header">
+    <h1>{{recipe.title}}</h1>
+
+    <p class="recipe-meta">
+      By <a href="/users/{{recipe.user_id}}">{{recipe.author}}</a>
+      &middot; Created {{recipe.created_at}}
+      {{#if recipe.updated_at}}
+        &middot; Updated {{recipe.updated_at}}
+      {{/if}}
+    </p>
+
+    {{#if recipe.description}}
+      <p class="recipe-description">{{recipe.description}}</p>
+    {{/if}}
+  </header>
+
+  {{!-- Quick facts row. "—" shows when a value was left blank --}}
+  <ul class="stat-row">
+    <li>
+      <span class="stat-label">Prep</span>
+      <span class="stat-value">{{#if recipe.prep_time}}{{recipe.prep_time}} min{{else}}&mdash;{{/if}}</span>
+    </li>
+    <li>
+      <span class="stat-label">Cook</span>
+      <span class="stat-value">{{#if recipe.cook_time}}{{recipe.cook_time}} min{{else}}&mdash;{{/if}}</span>
+    </li>
+    <li>
+      <span class="stat-label">Servings</span>
+      <span class="stat-value">{{#if recipe.servings}}{{recipe.servings}}{{else}}&mdash;{{/if}}</span>
+    </li>
+    <li>
+      <span class="stat-label">Favorites</span>
+      <span class="stat-value">{{recipe.favorite_count}}</span>
+    </li>
+  </ul>
+
+  <div class="recipe-actions">
+    {{!-- Favorite toggle (POST). Logged-out users get a login link instead --}}
+    {{#if user}}
+      <form method="POST" action="/recipes/{{recipe.id}}/favorite">
+        {{#if isFavorited}}
+          <button type="submit" class="btn btn-favorite is-favorited">&#9829; Favorited</button>
+        {{else}}
+          <button type="submit" class="btn btn-favorite">&#9825; Favorite</button>
+        {{/if}}
+      </form>
+    {{else}}
+      <a href="/login?redirect=/recipes/{{recipe.id}}" class="btn btn-secondary">Log in to favorite</a>
+    {{/if}}
+
+    {{!-- Only the owner sees Edit / Delete --}}
+    {{#if isOwner}}
+      <a href="/recipes/{{recipe.id}}/edit" class="btn btn-secondary">Edit</a>
+
+      {{!-- data-confirm triggers the popup in public/js/script.js --}}
+      <form method="POST" action="/recipes/{{recipe.id}}/delete" data-confirm="Delete this recipe? This cannot be undone.">
+        <button type="submit" class="btn btn-danger">Delete</button>
+      </form>
+    {{/if}}
+  </div>
+
+  <div class="recipe-body">
+    <section class="recipe-section">
+      <h2>Ingredients</h2>
+      {{!-- .preserve-lines keeps the line breaks the user typed --}}
+      <div class="preserve-lines">{{recipe.ingredients}}</div>
+    </section>
+
+    <section class="recipe-section">
+      <h2>Instructions</h2>
+      <div class="preserve-lines">{{recipe.instructions}}</div>
+    </section>
+  </div>
+</article>
