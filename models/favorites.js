@@ -1,27 +1,29 @@
 //All Queries for Favorites will live here
 import {pool} from '../db/connection.js';
 
-//Get the number of favorites a specific recipe has
-export const getNumFavorites = async (recipeId) => {
-    const sql = `
-        SELECT
-            COUNT(id)
-        FROM favorites
-        GROUP BY id
-        WHERE id = $1
+//Toggle a favorite on/off. returns true for on, false for off
+export const toggleFavorite = async (recipeId, userId) => {
+    const deleteSql = `
+        DELETE FROM favorites
+        WHERE recipe_id = $1
+            AND user_id = $2
+        RETURNING id    
+    `;
+    const insertSql = `
+        INSERT INTO favorites (recipe_id, user_id)
+        VALUES ($1, $2)
     `;
 
-    const result = await pool.query(sql, [recipeId])
-    return result.rows[0]; //num of favorites
-};
-
-//Toggle a favorite on/off
-export const toggleFavorite = async (recipeId, userId) => {
     //If it already exists, remove it
+    const result = await pool.query(deleteSql, [recipeId, userId]);
 
-    //Else, add it
+    //If nothing got deleted, add it to the list
+    if (result.rowCount == 0) {
+        await pool.query(insertSql, [recipeId, userId]);
+        return true;
+    };
 
-    return ;//favorite id
+    return false;
 };
 
 //check if a recipe is favorited by a specific user
@@ -30,9 +32,8 @@ export const isRecipeFavorite = async (recipeId, userId) => {
     const sql = `
         SELECT id
         FROM favorites
-        WHERE 
-            recipe_id = $1,
-            user_id = $2
+        WHERE recipe_id = $1
+            AND user_id = $2
     `;
 
     const result = await pool.query(sql, [recipeId, userId]);
