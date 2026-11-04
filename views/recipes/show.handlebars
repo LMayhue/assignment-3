@@ -61,7 +61,7 @@
       <a href="/recipes/{{recipe.id}}/edit" class="btn btn-secondary">Edit</a>
 
       {{!-- data-confirm triggers the popup in public/js/script.js --}}
-      <form method="POST" action="/recipes/{{recipe.id}}/delete" data-confirm="Delete this recipe? This cannot be undone.">
+      <form method="POST" action="/recipes/{{recipe.id}}/delete" data-confirm="Are you sure you want to delete this recipe? This cannot be undone.">
         <button type="submit" class="btn btn-danger">Delete</button>
       </form>
     {{/if}}
