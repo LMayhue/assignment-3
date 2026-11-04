@@ -43,3 +43,27 @@ export const isRecipeFavorite = async (recipeId, userId) => {
     };
     return true;
 };
+
+//Get all the favorite recipe ids for a specific user
+export const getFavoritesByUserId = async (userId) => {
+    const sql = `
+        SELECT recipe_id
+        FROM favorites
+        WHERE user_id = $1
+    `;
+
+    const result = await pool.query(sql, [userId]);
+    return result.rows.map(row => row.recipe_id);
+}
+
+// Add `is_favorited` to each recipe in a list
+    //This makes marking favorites easier in the templates
+export const markFavorites = (recipes, userId) => {
+    const favorites = getFavoritesByUserId(userId);
+    for (const recipe of recipes) {
+        //adds true to each. Recipes without this tag are seen as false
+        recipe.is_favorited = favorites.includes(recipe.id);
+    }; 
+
+    return recipes;
+};
