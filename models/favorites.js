@@ -45,7 +45,7 @@ export const isRecipeFavorite = async (recipeId, userId) => {
 };
 
 //Get all the favorite recipe ids for a specific user
-export const getFavoritesByUserId = async (userId) => {
+const getFavoritesByUserId = async (userId) => {
     const sql = `
         SELECT recipe_id
         FROM favorites
