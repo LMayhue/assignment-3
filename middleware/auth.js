@@ -35,7 +35,7 @@ export const startSession = async (res, userId) => {
     const newSession = await createSession(userId);
 
     res.cookie('session_id', newSession, {
-    maxAge: 60 * 1000, // 1 minute in milliseconds
+    maxAge: 60 * 60 * 1000, // 1 hour in milliseconds
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax'
