@@ -20,6 +20,15 @@ const checkRecipeOwner = (recipe, req) => {
     return false;
 }
 
+//Makes sure the given input is a number. If not, returns null or 0
+const getValidInput = (input) => {
+    //not a number (ie 'abc', '')
+    if (!/^\d+$/.test(input)) {
+        return null;
+    }
+    return Number(input);
+};
+
 //Reads the html form and verifies inputs are valid
 const readRecipeForm = (body) => {
     const errors = [];
@@ -43,7 +52,7 @@ const readRecipeForm = (body) => {
         errors.push('Instructions are required.');
     };
 
-    const formFields = {
+    const formItems = {
         title: title,
         description: description,
         ingredients: ingredients,
@@ -53,7 +62,7 @@ const readRecipeForm = (body) => {
         servings: servings
     }
 
-    return {formFields, errors}
+    return {formItems, errors};
 };
 
 //GET /recipes - Browse all recipes
@@ -82,14 +91,15 @@ recipesRouter.get('/recipes/new', requireLogin, (req, res) => {
 });
 
 //GET /recipes/:id - View a single recipe with its details and number of favorites
-recipesRouter.get('/recipes/:id', async (req, res) => {
-    //get the recipe from the id
+recipesRouter.get('/recipes/:id', async (req, res, next) => {
+    //Make sure the id is a valid number
     if (!/^\d+$/.test(req.params.id)) {
         const error = new Error;
         error.statusCode = 404;
         return next(error);
     }
 
+    //Get the recipe from the given Id
     const recipeId = Number(req.params.id);
     const recipe = await getRecipeById(recipeId);
     if (!recipe) {
@@ -98,11 +108,13 @@ recipesRouter.get('/recipes/:id', async (req, res) => {
         return next(error);
     };
     
-    //Determine if the recipe is owned by the user
-    const isOwner = checkRecipeOwner(recipe, req);
-    //Determine if the recipe is favorited by the user
-    const isFavorited = await isRecipeFavorite(recipe.id, req.user.id);
-
+    let isOwner = false;
+    let isFavorited = false;
+    //If the user is logged in, check if they are the owner and if they have favorited it
+    if (req.user) {
+        isOwner = checkRecipeOwner(recipe, req);
+        isFavorited = await isRecipeFavorite(recipe.id, req.user.id);
+    };
     //display the recipe page
     res.render('recipes/show', {
         title: recipe.title,
@@ -131,9 +143,9 @@ recipesRouter.post('/recipes', requireLogin, async (req, res) => {
         description: formItems.description, 
         ingredients: formItems.ingredients,
         instructions: formItems.instructions,
-        prep_time: (Number(formItems.prep_time) ?? null),
-        cook_time: (Number(formItems.cook_time) ?? null),
-        servings: (Number(formItems.servings) ?? null),
+        prep_time: getValidInput(formItems.prep_time),
+        cook_time: getValidInput(formItems.cook_time),
+        servings: getValidInput(formItems.servings),
         user_id: req.user.id
     };
 
@@ -143,7 +155,14 @@ recipesRouter.post('/recipes', requireLogin, async (req, res) => {
 });
 
 //GET /recipes/:id/edit - Display form to edit a recipe (only the recipe owner can edit)
-recipesRouter.get('/recipes/:id/edit', requireLogin, async (req, res) => {
+recipesRouter.get('/recipes/:id/edit', requireLogin, async (req, res, next) => {
+    //Make sure the given Id is valid
+    if (!/^\d+$/.test(req.params.id)) {
+        const error = new Error;
+        error.statusCode = 404;
+        return next(error);
+    }
+    
     const recipe = await getRecipeById(Number(req.params.id));
     if (!checkRecipeOwner(recipe, req)) {
         const error = new Error;
@@ -168,7 +187,7 @@ recipesRouter.get('/my-recipes', requireLogin, async (req, res) => {
 });
 
 //POST /recipes/:id - Update a recipe (only the recipe owner can update)
-recipesRouter.post('/recipes/:id', requireLogin, async (req, res) => {
+recipesRouter.post('/recipes/:id', requireLogin, async (req, res, next) => {
     const thisRecipe = await getRecipeById(Number(req.params.id));
     if (!checkRecipeOwner(thisRecipe, req)) {
         const error = new Error;
@@ -185,22 +204,23 @@ recipesRouter.post('/recipes/:id', requireLogin, async (req, res) => {
         });
     };
 
-    const recipeValues = {
+    const recipeData = {
         title: formItems.title,
         description: formItems.description, 
         ingredients: formItems.ingredients,
         instructions: formItems.instructions,
-        prep_time: Number(formItems.prep_time),
-        cook_time: Number(formItems.cook_time),
-        servings: Number(formItems.servings)
+        prep_time: getValidInput(formItems.prep_time),
+        cook_time: getValidInput(formItems.cook_time),
+        servings: getValidInput(formItems.servings),
+        user_id: req.user.id
     };
 
-    await editRecipe(thisRecipe.id, recipeValues);
+    await editRecipe(thisRecipe.id, recipeData);
     res.redirect(`/recipes/${thisRecipe.id}`);
 });
 
 //POST /recipes/:id/delete - Delete a recipe (only the recipe owner can delete)
-recipesRouter.post('/recipes/:id/delete', requireLogin, async (req, res) => {
+recipesRouter.post('/recipes/:id/delete', requireLogin, async (req, res, next) => {
     const recipe = await getRecipeById(Number(req.params.id));
     //Verify the user is actually the owner
     if (!checkRecipeOwner(recipe, req)) {
@@ -214,14 +234,15 @@ recipesRouter.post('/recipes/:id/delete', requireLogin, async (req, res) => {
 });
 
 //POST /recipes/:id/favorite - Add/remove a recipe from favorites
-recipesRouter.post('/recipes/:id/favorite', requireLogin, async (req, res) => {
+recipesRouter.post('/recipes/:id/favorite', requireLogin, async (req, res, next) => {
     const recipe = await getRecipeById(Number(req.params.id));
     //Verify the user is actually the owner
-    if (!checkRecipeOwner(recipe, req)) {
+    if (!recipe) {
         const error = new Error;
-        error.statusCode = 403;
+        error.statusCode = 404;
         return next(error);
     };
 
-    await toggleFavorite(recipe.id, req.params.id);
+    await toggleFavorite(recipe.id, req.user.id);
+    res.redirect(`/recipes/${recipe.id}`);
 });

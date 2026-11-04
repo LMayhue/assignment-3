@@ -6,22 +6,28 @@ import {requireLogin, endSession, startSession} from '../middleware/auth.js';
 
 export const userRouter = express.Router();
 
-//bcrypt stuff
+//bcrypt salt
 const SALT_ROUNDS = 10;
 
-//Check values
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 
 //***PUBLIC***
 //GET /users/:id - View a user's profile showing their recipes
 userRouter.get('/users/:id', async (req, res) => {
+    //Make sure the id is a valid number
+    if (!/^\d+$/.test(req.params.id)) {
+        const error = new Error;
+        error.statusCode = 404;
+        return next(error);
+    }
+
     //Get the info needed to make the page (user, users recipes)
-    const userId = parseInt(req.params.id);
-    const profile = await findUserById(userId);
+    const profile = await findUserById(Number(userId));
     //if the user doesn't exist, send 404
     if (!profile) {
-        return res.status(404);
+        const error = new Error;
+        error.statusCode = 404;
+        return next(error);
     }
 
     const recipes = await getRecipesByUserId(userId);
@@ -49,10 +55,10 @@ userRouter.post('/login', async (req, res) => {
 
     //If a field is empty, tell the user
     const errors = [];
-    if (req.body.usernameEmail === '') {
+    if (req.body.usernameEmail.trim() === '') {
         errors.push('Please enter your username or email.');
     }
-    if (req.body.password === '') {
+    if (req.body.password.trim() === '') {
         errors.push('Please enter your password.');
     }
     if (errors.length > 0) {
@@ -121,6 +127,9 @@ userRouter.post('/register', async (req, res) => {
 
     if (email == "") {
         errors.push("An Email is required.");
+    }
+    else if (!EMAIL_PATTERN.test(email)) {
+        errors.push("A valid Email address is required.")
     }
     else if (existingEmail) {
         errors.push("That Email is already taken.")
