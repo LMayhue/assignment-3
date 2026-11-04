@@ -8,7 +8,7 @@ import {
     editRecipe,
     deleteRecipe
 } from '../models/recipes.js';
-import {isRecipeFavorite, toggleFavorite} from '../models/favorites.js';
+import {isRecipeFavorite, markFavorites, toggleFavorite} from '../models/favorites.js';
 
 export const recipesRouter = express.Router();
 
@@ -73,6 +73,10 @@ recipesRouter.get('/recipes', async (req, res)=> {
         search = req.query.q.trim();
     }
     const recipes = await getAllRecipes(search);
+
+    if (req.user) {
+        await markFavorites(recipes, req.user.id);
+    };
 
     //Display the recipes using `index.hbs` template
     res.render('recipes/index', {
@@ -187,6 +191,8 @@ recipesRouter.get('/recipes/:id/edit', requireLogin, async (req, res, next) => {
 // GET /my-recipes - View the current user's own recipes
 recipesRouter.get('/my-recipes', requireLogin, async (req, res) => {
     const recipes = await getRecipesByUserId(req.user.id);
+
+    await markFavorites(recipes, req.user.id);
 
     res.render('my-recipes', {
         title: 'My Recipes',

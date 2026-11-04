@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import {createUser, findUserById, findUserByUsername, findUserByEmail, verifyUser} from '../models/users.js';
 import {getRecipesByUserId} from '../models/recipes.js';
 import {requireLogin, endSession, startSession} from '../middleware/auth.js';
+import { markFavorites } from '../models/favorites.js';
 
 export const userRouter = express.Router();
 
@@ -31,6 +32,9 @@ userRouter.get('/users/:id', async (req, res, next) => {
     }
 
     const recipes = await getRecipesByUserId(Number(req.params.id));
+    if (req.user) {
+        await markFavorites(recipes, req.user.id)
+    }
 
     res.render('users/show', {
         title: profile.username,
