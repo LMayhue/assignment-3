@@ -32,8 +32,8 @@
     {{/if}}
 
     {{!-- Heart + favorite count --}}
-    <li class="fav-count {{#if favorited}}is-favorited{{/if}}">
-      {{#if favorited}}&#9829;{{else}}&#9825;{{/if}} {{favorite_count}}
+    <li class="fav-count {{#if is_favorited}}is-favorited{{/if}}">
+      {{#if is_favorited}}&#9829;{{else}}&#9825;{{/if}} {{favorite_count}}
     </li>
   </ul>
 </article>

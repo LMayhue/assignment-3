@@ -7,7 +7,7 @@
   <div class="card-grid">
     {{#each recipes}}
       {{!-- Everything on this page is favorited, so fill the heart --}}
-      {{> recipe-card favorited=true}}
+      {{> recipe-card is_favorited=true}}
     {{/each}}
   </div>
 {{else}}
