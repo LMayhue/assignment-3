@@ -1,6 +1,19 @@
 //All Queries for Favorites will live here
 import {pool} from '../db/connection.js';
 
+//Get all the favorite recipe ids for a specific user
+//(Just used in this file, not exported)
+const getFavoritesByUserId = async (userId) => {
+    const sql = `
+        SELECT recipe_id
+        FROM favorites
+        WHERE user_id = $1
+    `;
+
+    const result = await pool.query(sql, [userId]);
+    return result.rows.map(row => row.recipe_id);
+}
+
 //Toggle a favorite on/off. returns true for on, false for off
 export const toggleFavorite = async (recipeId, userId) => {
     const deleteSql = `
@@ -43,18 +56,6 @@ export const isRecipeFavorite = async (recipeId, userId) => {
     };
     return true;
 };
-
-//Get all the favorite recipe ids for a specific user
-const getFavoritesByUserId = async (userId) => {
-    const sql = `
-        SELECT recipe_id
-        FROM favorites
-        WHERE user_id = $1
-    `;
-
-    const result = await pool.query(sql, [userId]);
-    return result.rows.map(row => row.recipe_id);
-}
 
 // Add `is_favorited` to each recipe in a given recipe list
     //This makes marking favorites easier in the templates
