@@ -287,13 +287,6 @@ recipesRouter.post('/recipes/:id/favorite', requireLogin, async (req, res, next)
         return next(error);
     };
 
-    //Verify the user is actually the owner
-    if (!checkRecipeOwner(recipe, req)) {
-        const error = new Error;
-        error.statusCode = 403;
-        return next(error);
-    };
-
     await toggleFavorite(recipe.id, req.user.id);
     res.redirect(`/recipes/${recipe.id}`);
 });
