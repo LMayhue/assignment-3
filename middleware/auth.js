@@ -25,7 +25,7 @@ export const requireLogin = (req, res, next) => {
     if (!req.user) {
         const error = new Error;
         error.statusCode = 401;
-        return error; //auth error, sends to error handler
+        return next(error); //auth error, sends to error handler
     };
     next();
 };
