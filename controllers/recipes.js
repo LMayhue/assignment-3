@@ -163,7 +163,15 @@ recipesRouter.get('/recipes/:id/edit', requireLogin, async (req, res, next) => {
         return next(error);
     }
     
+    //Make sure the recipe exists
     const recipe = await getRecipeById(Number(req.params.id));
+    if (!recipe) {
+        const error = new Error;
+        error.statusCode = 404;
+        return next(error);
+    }
+
+    //Make sure the user is the recipe owner
     if (!checkRecipeOwner(recipe, req)) {
         const error = new Error;
         error.statusCode = 403;
@@ -195,7 +203,15 @@ recipesRouter.post('/recipes/:id', requireLogin, async (req, res, next) => {
         return next(error);
     }
     
+    //Make sure the recipe exists
     const thisRecipe = await getRecipeById(Number(req.params.id));
+    if (!thisRecipe) {
+        const error = new Error;
+        error.statusCode = 404;
+        return next(error);
+    }
+
+    //Make sure the user is the recipe owner
     if (!checkRecipeOwner(thisRecipe, req)) {
         const error = new Error;
         error.statusCode = 403;
@@ -235,7 +251,14 @@ recipesRouter.post('/recipes/:id/delete', requireLogin, async (req, res, next) =
         return next(error);
     }
     
+    //Make sure the recipe exists
     const recipe = await getRecipeById(Number(req.params.id));
+    if (!recipe) {
+        const error = new Error;
+        error.statusCode = 404;
+        return next(error);
+    }
+    
     //Verify the user is actually the owner
     if (!checkRecipeOwner(recipe, req)) {
         const error = new Error;
@@ -256,11 +279,18 @@ recipesRouter.post('/recipes/:id/favorite', requireLogin, async (req, res, next)
         return next(error);
     }
     
+    //Make sure the recipe exists
     const recipe = await getRecipeById(Number(req.params.id));
-    //Verify the user is actually the owner
     if (!recipe) {
         const error = new Error;
         error.statusCode = 404;
+        return next(error);
+    };
+
+    //Verify the user is actually the owner
+    if (!checkRecipeOwner(recipe, req)) {
+        const error = new Error;
+        error.statusCode = 403;
         return next(error);
     };
 
