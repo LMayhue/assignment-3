@@ -188,6 +188,13 @@ recipesRouter.get('/my-recipes', requireLogin, async (req, res) => {
 
 //POST /recipes/:id - Update a recipe (only the recipe owner can update)
 recipesRouter.post('/recipes/:id', requireLogin, async (req, res, next) => {
+    //Make sure the id is a valid number
+    if (!/^\d+$/.test(req.params.id)) {
+        const error = new Error;
+        error.statusCode = 404;
+        return next(error);
+    }
+    
     const thisRecipe = await getRecipeById(Number(req.params.id));
     if (!checkRecipeOwner(thisRecipe, req)) {
         const error = new Error;
@@ -221,6 +228,13 @@ recipesRouter.post('/recipes/:id', requireLogin, async (req, res, next) => {
 
 //POST /recipes/:id/delete - Delete a recipe (only the recipe owner can delete)
 recipesRouter.post('/recipes/:id/delete', requireLogin, async (req, res, next) => {
+    //Make sure the id is a valid number
+    if (!/^\d+$/.test(req.params.id)) {
+        const error = new Error;
+        error.statusCode = 404;
+        return next(error);
+    }
+    
     const recipe = await getRecipeById(Number(req.params.id));
     //Verify the user is actually the owner
     if (!checkRecipeOwner(recipe, req)) {
@@ -235,6 +249,13 @@ recipesRouter.post('/recipes/:id/delete', requireLogin, async (req, res, next) =
 
 //POST /recipes/:id/favorite - Add/remove a recipe from favorites
 recipesRouter.post('/recipes/:id/favorite', requireLogin, async (req, res, next) => {
+    //Make sure the id is a valid number
+    if (!/^\d+$/.test(req.params.id)) {
+        const error = new Error;
+        error.statusCode = 404;
+        return next(error);
+    }
+    
     const recipe = await getRecipeById(Number(req.params.id));
     //Verify the user is actually the owner
     if (!recipe) {

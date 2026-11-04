@@ -13,7 +13,7 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 //***PUBLIC***
 //GET /users/:id - View a user's profile showing their recipes
-userRouter.get('/users/:id', async (req, res) => {
+userRouter.get('/users/:id', async (req, res, next) => {
     //Make sure the id is a valid number
     if (!/^\d+$/.test(req.params.id)) {
         const error = new Error;
@@ -22,7 +22,7 @@ userRouter.get('/users/:id', async (req, res) => {
     }
 
     //Get the info needed to make the page (user, users recipes)
-    const profile = await findUserById(Number(userId));
+    const profile = await findUserById(Number(req.params.id));
     //if the user doesn't exist, send 404
     if (!profile) {
         const error = new Error;
@@ -30,13 +30,13 @@ userRouter.get('/users/:id', async (req, res) => {
         return next(error);
     }
 
-    const recipes = await getRecipesByUserId(userId);
+    const recipes = await getRecipesByUserId(Number(req.params.id));
 
     res.render('users/show', {
         title: profile.username,
         profile,
         recipes,
-        recipeCount: recipes.length        
+        recipeCount: recipes.length       
     });
 });
 
