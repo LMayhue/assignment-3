@@ -11,7 +11,7 @@ favoritesRouter.get('/favorites', requireLogin, async (req, res) => {
 
     res.render('favorites', {
         title: 'Favorites',
-        user: req.user,
+        user,
         recipes
     })
 });
