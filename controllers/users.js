@@ -1,9 +1,15 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
-import {createUser, findUserById, findUserByUsername, findUserByEmail, verifyUser} from '../models/users.js';
+import {
+    createUser,
+    findUserById,
+    findUserByUsername,
+    findUserByEmail,
+    verifyUser
+} from '../models/users.js';
 import {getRecipesByUserId} from '../models/recipes.js';
 import {requireLogin, endSession, startSession} from '../middleware/auth.js';
-import { markFavorites } from '../models/favorites.js';
+import {markFavorites} from '../models/favorites.js';
 
 export const userRouter = express.Router();
 
