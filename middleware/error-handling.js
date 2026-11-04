@@ -6,7 +6,10 @@ export const errorHandler = (error, req, res, next) => {
     
     //401 = auth needed. redirect to login page
     if (error.statusCode == 401) {
-        return res.redirect(`/login?redirect=${encodeURIComponent(req.originalUrl)}`);
+        if (req.method == 'GET') {
+            return res.redirect(`/login?redirect=${encodeURIComponent(req.originalUrl)}`);
+        }
+        return res.redirect('/login');
     }
 
     //403 = not allowed to see this as the logged in user
