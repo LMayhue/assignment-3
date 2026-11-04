@@ -4,15 +4,19 @@
   The current context is one recipe row from BASIC_QUERY
   (id, title, description, prep_time, cook_time, servings, user_id, author, favorite_count).
 
-  Optional: pass favorited=true to show a filled heart:   {{> recipe-card favorited=true}}
+  Optional: pass is_favorited=true to show a filled heart:   {{> recipe-card is_favorited=true}}
+
+  Clicking anywhere on the card opens the recipe:
+    .card-link stretches an invisible layer over the whole card (see style.css).
+    .card-author-link sits above that layer, so the author name still opens their profile.
 --}}
 <article class="card recipe-card">
   <h3 class="card-title">
-    <a href="/recipes/{{id}}">{{title}}</a>
+    <a class="card-link" href="/recipes/{{id}}">{{title}}</a>
   </h3>
 
   <p class="card-meta">
-    by <a href="/users/{{user_id}}">{{author}}</a>
+    by <a class="card-author-link" href="/users/{{user_id}}">{{author}}</a>
   </p>
 
   {{!-- Description is optional in the database --}}
