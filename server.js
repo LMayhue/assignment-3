@@ -19,7 +19,7 @@ const formatDate = (date) => {
         minute: '2-digit'
     };
 
-    return new Date(date).toLocaleString('en-US', options);
+    return new Date(date).toLocaleString('en-US', dateOptions);
 };
 
 

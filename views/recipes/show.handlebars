@@ -11,9 +11,9 @@
 
     <p class="recipe-meta">
       By <a href="/users/{{recipe.user_id}}">{{recipe.author}}</a>
-      &middot; Created {{recipe.created_at}}
+      &middot; Created {{formatDate recipe.created_at}}
       {{#if recipe.updated_at}}
-        &middot; Updated {{recipe.updated_at}}
+        &middot; Updated {{formatDate recipe.updated_at}}
       {{/if}}
     </p>
 
