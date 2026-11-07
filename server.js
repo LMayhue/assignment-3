@@ -22,19 +22,21 @@ const formatDate = (date) => {
     return new Date(date).toLocaleString('en-US', dateOptions);
 };
 
-
-//Express & handlebars initialization
+//Express & handlebars initialization and set up
 const app = express();
 app.engine("handlebars", engine({
     helpers: {
         formatDate
+    },
+    compilerOptions: {
+        preventIndent: true
     }
 }));
 app.set('view engine', 'handlebars');
 app.set('views', './views');
 
 //applicable middleware
-app.use(express.urlencoded({extended:true})); //Get url params
+app.use(express.urlencoded({extended:true})); //Use url for parameters
 app.use(express.static("public")); //Serve statics
 app.use(loggingMiddleware); //Log req, res
 app.use(cookieParser()); //Parse cookies

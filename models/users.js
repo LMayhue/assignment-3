@@ -70,3 +70,16 @@ export const createUser = async (username, email, passHash) => {
     const result = await pool.query(sql, userValues);
     return result.rows[0];
 };
+
+// Remove a user (Can only be accessed through the terminal)
+    //Returns the number of rows deleted (1 is success, 0 is failure)
+const removeUser = async (userId) => {
+    const sql = `
+        DELETE FROM users
+        WHERE id = $1
+        ON DELETE CASCADE
+    `;
+    
+    const result = await pool.query(sql, [userId]);
+    return result.rowCount;
+};
