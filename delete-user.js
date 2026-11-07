@@ -4,12 +4,12 @@ import * as readline from 'node:readline/promises';
 import {stdin as input, stdout as output} from 'node:process';
 
 const deleteUser = async () => {
-    const input = process.argv[2];
-    if (!input) {
+    const userIn = process.argv[2];
+    if (!userIn) {
         console.log("Usage: node delete-user.js <userId>");
         return;
     };
-    const userId = Number(input);
+    const userId = Number(userIn);
 
     const user = await findUserById(userId);
     if (!user) {
