@@ -3,7 +3,7 @@ import {findUserById, removeUserById} from './models/users.js';
 import * as readline from 'node:readline/promises';
 import {stdin as input, stdout as output} from 'node:process';
 
-const deleteUser = async (userId) => {
+const deleteUser = async (input) => {
     const input = process.argv[2];
     if (!input) {
         console.log("Usage: node delete-user.js <userId>");
